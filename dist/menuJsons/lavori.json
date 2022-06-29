@@ -1,0 +1,26 @@
+[{
+        "name": "A.Lavori",
+        "imports": ["A.Info", "A.Progetti"],
+        "class": "lavori"
+    },
+    {
+        "name": "A.Progetti",
+        "imports": ["A.Info", "A.Lavori"]
+    },
+    {
+        "name": "A.Info",
+        "imports": ["A.Lavori", "A.Progetti"]
+    },
+    {
+        "name": "A.Home",
+        "imports": ["A.Info", "A.Progetti", "A.Lavori"],
+        "class": "home"
+    },
+    {
+        "name": "A.B.Uao Skateparks website",
+        "imports": ["A.Lavori"],
+        "subtext": "From skaters to skaters",
+        "url": "https://www.uaoskateparks.it/",
+        "class": "href"
+    }
+]

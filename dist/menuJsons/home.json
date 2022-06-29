@@ -1,0 +1,16 @@
+[{
+        "name": "A.Lavori",
+        "imports": ["A.Progetti"],
+        "class": "lavori"
+    },
+    {
+        "name": "A.Info",
+        "imports": ["A.Progetti", "A.Lavori"],
+        "class": "Info"
+    },
+    {
+        "name": "A.Progetti",
+        "imports": [],
+        "class": "progetti"
+    }
+]

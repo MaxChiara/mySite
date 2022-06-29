@@ -1,0 +1,15 @@
+(xs -> fino a 639)
+sm	640px	@media (min-width: 640px) { ... }
+md	768px	@media (min-width: 768px) { ... }
+lg	1024px	@media (min-width: 1024px) { ... }
+xl	1280px	@media (min-width: 1280px) { ... }
+2xl	1536px  @media (min-width: 1536px) { ... }
+
+Ciao mi chiamo Massimiliano e sono un front-end web delevoper, con background in lingue e musica.
+In altre parole ho studiato Lingue e Letterature Straniere (statale di Milano) e poi musica (conservatorio "Giuseppe Verdi") prima di arrivare allo studio dell'informatica presso l'università statale di Milano - corso in Sicurezza dei Sistemi e delle Reti Informatiche.
+In 'Portfolio' potete vedere alcuni siti fatti da me mentre in 'Progetti' potete vedere alcuni progetti personali.
+Non esitate a scrivermi per info o preventivi.
+
+TO DO:
+-# per ogni sezione del menu
+-Document title, info package.json

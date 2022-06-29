@@ -1,0 +1,42 @@
+[{
+        "name": "A.Lavori",
+        "imports": ["A.Progetti"],
+        "class": "lavori"
+    },
+    {
+        "name": "A.Progetti",
+        "imports": [],
+        "class": "progetti"
+    },
+    {
+        "name": "A.Info",
+        "imports": ["A.Progetti", "A.Lavori"],
+        "class": "Info"
+    },
+    {
+        "name": "A.Home",
+        "imports": ["A.Info", "A.Progetti", "A.Lavori"],
+        "class": "home"
+    },
+    {
+        "name": "A.B.Crypto Coins Data",
+        "imports": ["A.Progetti"],
+        "subtext": "Javascript, Node.js, D3",
+        "class": "href"
+    },
+    {
+        "name": "A.B.Events Search App",
+        "imports": ["A.Progetti"],
+        "subtext": "React, Tailwind, Material UI",
+        "url": "https://iridescent-clafoutis-ada50f.netlify.app/",
+        "class": "href"
+    },
+    {
+        "name": "A.B.Images and videos gallery",
+        "imports": ["A.Progetti"],
+        "subtext": "Reacy, Tailwind",
+        "url": "https://kaleidoscopic-halva-d4e3c1.netlify.app/",
+        "class": "href"
+    }
+
+]

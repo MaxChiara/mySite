@@ -1,0 +1,10 @@
+[{
+        "name": "A.-",
+        "imports": ["A.--"],
+        "class": "lavori"
+    },
+    {
+        "name": "A.--",
+        "imports": ["A.-"]
+    }
+]
