@@ -385,18 +385,15 @@ async function drawInfoLine() {
             return this.getElementById("sudimePathStart");
         }.bind(document)
     );
-    console.log("departureElement: ", departureElement);
     if (!departureElement) {
         return true;
     }
     let departureCoord = await extractPathStartingValue(departureElement);
-    console.log("departureCoord: ", departureCoord);
     let svgRect = await tryGetStuff(
         function() {
             return this.getElementsByClassName("rootG")[0].getBoundingClientRect();
         }.bind(document)
     );
-    console.log("SVG RECT: ", svgRect);
     let arrivalRect = await tryGetStuff(
         function() {
             return this.getElementById("descriptionBox").getBoundingClientRect();
@@ -418,11 +415,9 @@ async function drawInfoLine() {
 }
 
 async function tryGetStuff(func) {
-    console.log(func);
     let result,
         i = 0;
     while (true) {
-        console.log("check");
         i++;
         result = func();
         if (result || i == 50) {
@@ -439,7 +434,6 @@ async function extractPathStartingValue(el) {
             return this.getAttribute("d");
         }.bind(el)
     );
-    console.log(d);
     let start = d.indexOf("M");
     let end = d.indexOf("L");
     d = d.slice(start + 1, end);

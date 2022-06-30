@@ -97,8 +97,11 @@ text {
     max-width: 21rem;
     background-color: rgb(15 15 15 / 0%);
     color: #ffffffd1;
-    font-size: 12px;
     transform: translate(-10%, -50%);
+}
+
+#descriptionBox p {
+    font-size: 14px;
 }
 
 @keyframes fadeIn {
@@ -112,12 +115,13 @@ text {
 
 @media screen and (max-width: 639px) {
     #descriptionBox {
-        /* transform: translate(-48%, 40%); */
         max-width: 100vw;
         width: 80%;
         text-align: center;
-        font-size: 10px;
         transform: translate(-10%, -200%);
+    }
+    #descriptionBox p {
+        font-size: 12px;
     }
     .href {
         text-anchor: middle;
@@ -127,6 +131,8 @@ text {
 @media screen and (max-width: 420px) {
     #descriptionBox {
         transform: translate(-10%, -170%);
+    }
+    #descriptionBox p {
         font-size: 10px;
     }
     .href {
