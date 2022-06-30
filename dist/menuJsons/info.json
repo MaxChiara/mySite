@@ -4,9 +4,14 @@
         "class": "lavori"
     },
     {
+        "name": "B.Su di me",
+        "imports": ["A.Info"]
+    },
+    {
         "name": "A.Progetti",
         "imports": ["A.Info", "A.Lavori"]
     },
+
     {
         "name": "A.Info",
         "imports": ["A.Lavori", "A.Progetti"]

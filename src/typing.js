@@ -1,12 +1,12 @@
 export const texts = {
     homeTitle: "MASSIMILIANO CHIARA",
     homeDescription: "Front End - Web Developer",
-    projects: "Alcuni siti fatti da me",
-    lavori: "Alcuni dei miei progetti personali",
+    projects: "Alcuni dei miei progetti personali",
+    lavori: "Alcuni siti fatti da me",
 };
 
 var speedSlow = 30; /* The speed/duration of the effect in milliseconds */
-var speedFast = 6;
+var speedFast = 5;
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -32,7 +32,7 @@ export async function cancelText(element) {
     }
 }
 
-export function clearTitles() {
-    cancelText(document.getElementById("title"));
-    cancelText(document.getElementById("subtitle"));
+export async function clearTitles() {
+    await cancelText(document.getElementById("title"));
+    await cancelText(document.getElementById("subtitle"));
 }

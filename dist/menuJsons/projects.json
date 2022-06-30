@@ -22,7 +22,8 @@
         "name": "A.B.Crypto Coins Data",
         "imports": ["A.Progetti"],
         "subtext": "Javascript, Node.js, D3",
-        "class": "href"
+        "class": "href",
+        "url": "https://glacial-meadow-11946.herokuapp.com/"
     },
     {
         "name": "A.B.Events Search App",
@@ -34,7 +35,7 @@
     {
         "name": "A.B.Images and videos gallery",
         "imports": ["A.Progetti"],
-        "subtext": "Reacy, Tailwind",
+        "subtext": "React, Tailwind",
         "url": "https://kaleidoscopic-halva-d4e3c1.netlify.app/",
         "class": "href"
     }

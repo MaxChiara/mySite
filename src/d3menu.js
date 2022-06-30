@@ -1,23 +1,18 @@
-import {
-    infoDescription,
-    appendedElementsDelay,
-    strokeColor,
-    competenze,
-} from "./config";
+import { infoDescription, appendedElementsDelay, competenze } from "./config";
 import * as d3 from "d3";
 import { pathDrawing, pathCanceling } from "./strokeAnimation";
-import { updateHistory, currentPage, setCurrentPage } from "./historyPush";
-import { texts, type, cancelText, clearTitles } from "./typing";
+import { updateHistory, setCurrentPage } from "./historyPush";
+import { texts, type, clearTitles } from "./typing";
 
 //https://bl.ocks.org/mbostock/1044242
-// var clusterSize = 800;
+
 let clusterRadius = 180;
 let transitionDuration = 1000;
 const exitRemoveDelay = 2000;
 const title = document.getElementById("title");
 const subtitle = document.getElementById("subtitle");
 const headingHeight = 70;
-var clusterSize;
+
 var cluster;
 var line;
 var root;
@@ -35,14 +30,6 @@ let width =
 let responsiveSettingsTable = {};
 let responsiveSettings;
 
-function setClusterWidth(width) {
-    if (width < 641) {
-        return Math.round((width * 0.5) / 2);
-    } else {
-        return Math.round((width * 0.9) / 2);
-    }
-}
-
 function setResponsiveSettings(width) {
     if (width < 511) {
         return responsiveSettingsTable.xs;
@@ -53,123 +40,42 @@ function setResponsiveSettings(width) {
     }
 }
 
-let elementsData = {
-    lavori: {
-        uao: {
-            x: null,
-            y: null,
-        },
-    },
-    info: {
-        descriptionBox: {
-            x: null,
-            y: null,
-        },
-    },
+const globalSvgSettings = {
+    rootGTranslate: [
+        Math.round(Math.round(width) / 2),
+        Math.round(Math.round(height) / 2 - 70),
+    ],
+    svgHeight: Math.round(height),
+    svgWidth: Math.round(width),
 };
 
 //TODO: transform relativo a dimensione svg
 window.onload = function() {
     responsiveSettingsTable = {
-        //max-width: 510
         xs: {
             width: Math.round(width * 0.5),
-            height: Math.round(height * 0.5),
-            // rotateAngle: 90,
-            rotateAngle: 0,
-            lavoriAngle: 52,
+            height: Math.round(height * 0.5) - headingHeight,
             scale: 0.6,
-            absoluteInfoPositioning: false,
             descriptionBoxTranslate: "translate(0%, 0%)",
-            rootGTranslate: [
-                Math.round(Math.round(width) / 2),
-                Math.round(Math.round(height) / 2 - 70),
-            ],
-            svgHeight: Math.round(height),
-            svgWidth: Math.round(width),
-            mainGTranslate: ["0", "0"],
-            info: {
-                // mainGTranslate: ["-28px", "50px"],
-                mainGTranslate: ["0px", "0px"],
-            },
-            lavori: {
-                // mainGTranslate: ["36px", "51px"],
-                mainGTranslate: ["0px", "0px"],
-            },
-            projects: {
-                // mainGTranslate: ["50px", "15px"],
-                mainGTranslate: ["0px", "0px"],
-            },
-            home: {
-                mainGTranslate: ["0", "0"],
-            },
         },
         //max-width 639px
         sm: {
             width: Math.round(width * 0.5),
-            height: Math.round(height * 0.5),
-            rotateAngle: 90,
-            lavoriAngle: -38,
+            height: Math.round(height * 0.5) - headingHeight,
             scale: 0.9,
-            absoluteInfoPositioning: false,
             descriptionBoxTranslate: "translate(-48%, 56%)",
-            rootGTranslate: [
-                Math.round(Math.round(width) / 2),
-                Math.round(Math.round(height) / 2 - 70),
-            ],
-            svgHeight: Math.round(height),
-            svgWidth: Math.round(width),
-            mainGTranslate: ["0px", "0px"],
-            info: {
-                mainGTranslate: ["0", "0"],
-            },
-            lavori: {
-                mainGTranslate: ["0", "0"],
-            },
-            projects: {
-                mainGTranslate: ["0", "0"],
-            },
-            home: {
-                mainGTranslate: ["0", "0"],
-            },
         },
         //min-width 640px
         md: {
             width: Math.round(width * 0.8),
-            height: Math.round(height * 0.8),
-            rotateAngle: 0,
-            lavoriAngle: -38,
+            height: Math.round(height * 0.8) - headingHeight,
             scale: 1,
-            absoluteInfoPositioning: false,
             descriptionBoxTranslate: "translate(-30%, -110%)",
-            rootGTranslate: [
-                Math.round(Math.round(width) / 2),
-                Math.round(Math.round(height) / 2 - 70),
-            ],
-            svgHeight: Math.round(height),
-            svgWidth: Math.round(width),
-            mainGTranslate: ["0px", "0px"],
-            info: {
-                mainGTranslate: ["0", "0"],
-            },
-            lavori: {
-                mainGTranslate: ["0", "0"],
-            },
-            projects: {
-                mainGTranslate: ["0", "0"],
-            },
-            home: {
-                mainGTranslate: ["0", "0"],
-            },
         },
     };
 
     responsiveSettings = setResponsiveSettings(width);
-    console.log(responsiveSettings.rootGTranslate[0]);
-    console.log(responsiveSettings);
-    //clusterSize = setClusterWidth(width);
-    console.log(height);
-    console.log(width);
+
     cluster = d3.cluster().size([360, responsiveSettings.width]);
 
     line = d3
@@ -185,108 +91,51 @@ window.onload = function() {
     svg = d3
         .select("#radialMenu")
         .append("svg")
-        .attr("width", responsiveSettings.svgWidth)
-        .attr("height", responsiveSettings.svgHeight - headingHeight)
-        // .attr("viewbox", "0 0 " + svgWidth * 2 + " " + svgHeight * 2)
-        // .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("width", globalSvgSettings.svgWidth)
+        .attr("height", globalSvgSettings.svgHeight - headingHeight)
         .style("margin", "auto auto auto 0")
         .append("g")
-        // .style("transform-origin", "top left")
-        // .style("transform-box", "fill-box")
         .attr("class", "rootG")
         .style(
             "transform",
             "translate(" +
-            responsiveSettings.rootGTranslate[0] +
+            globalSvgSettings.rootGTranslate[0] +
             "px, " +
-            responsiveSettings.rootGTranslate[1] +
+            globalSvgSettings.rootGTranslate[1] +
             "px) rotate(" +
             0 +
             "deg) scale(" +
             responsiveSettings.scale +
             ")"
-        )
-        .append("g")
-        .style("transform-origin", "center")
-        .style("transform-box", "fill-box")
-        .attr("class", "mainG");
-    // .attr(
-    //     "transform",
-    //     "translate(" +
-    //     Math.round(svgWidth / 2) +
-    //     "," +
-    //     Math.round(svgHeight / 2) +
-    //     ") rotate(" +
-    //     0 +
-    //     ")"
-    // );
-    //.attr("transform", "translate(" + radius + "," + radius + ") rotate(90deg)");
+        );
     node = svg.append("g");
     link = svg.append("g");
 
     showHome();
 };
 
-function updateLinks(root) {
-    svg
-        .append("g")
-        .selectAll("path")
-        .data(packageImports(root.leaves()))
-        .join(
-            function(enter) {
-                return enter.append("path").each(function(d) {
-                    pathDrawing(this);
-                });
-            },
-            function(update) {
-                return update.selectAll("path").style("opacity", 0);
-            },
-            function(exit) {
-                return exit.remove();
-            }
-        )
-        .transition()
-        .delay(function(d, i) {
-            return i * 75;
-        })
-        .duration(transitionDuration)
-        //.each(function(d) { pathDrawing(this) })
-        .each(function(d) {
-            (d.source = d[0]), (d.target = d[d.length - 1]);
-        })
-        .attr("d", line);
-}
-
 function updateData(file, graphRadius) {
     if (graphRadius) {
         cluster.size([graphRadius, clusterRadius]);
     }
     d3.json(file).then(function(classes) {
-        //console.log(classes);
         root = packageHierarchy(classes).sum(function(d) {
             return d.size;
         });
-
         cluster(root);
-        //console.log(root);
-        //updateLinks(root);
-
         link
             .selectAll("path")
             .data(packageImports(root.leaves()))
             .join(
                 function(enter) {
-                    return (
-                        enter
+                    return enter
                         .append("path")
-                        // .style("stroke-dasharray", "0,0")
                         .style("opacity", 1)
                         .each(function(d, i) {
                             setTimeout(() => {
                                 pathDrawing(this);
                             }, 100 * i);
-                        })
-                    );
+                        });
                 },
                 function(update) {
                     return update.style("opacity", function() {
@@ -298,8 +147,6 @@ function updateData(file, graphRadius) {
                     });
                 },
                 function(exit) {
-                    // exit.style("stroke-opacity", 0.5);
-                    // return setTimeout(() => exit.remove(), 1000)
                     return exit
                         .each(function(d, i) {
                             pathCanceling(this);
@@ -321,19 +168,16 @@ function updateData(file, graphRadius) {
                 return i * 75;
             })
             .duration(transitionDuration)
+            .ease(d3.easeCubicIn)
             .each(function(d) {
                 (d.source = d[0]), (d.target = d[d.length - 1]);
             })
             .attr("d", line)
-            .on("end", function() {
-                if (file.includes("info.json")) {
+            .on("end", function(d) {
+                if (d.source.data.key == "Su di me") {
                     drawInfoLine();
                 }
             });
-        // .each(function(d) {
-        //     pathDrawing(this);
-        // });
-        //.style('opacity', 1);
 
         node
             .selectAll("text")
@@ -347,7 +191,6 @@ function updateData(file, graphRadius) {
                 },
                 function(exit) {
                     exit.style("opacity", 0);
-                    // return setTimeout(() => exit.remove(), 1000)
                     return exit.remove();
                 }
             )
@@ -400,7 +243,6 @@ function updateData(file, graphRadius) {
                 addSubtext(d, this);
             })
             .transition()
-            //.delay(400)
             .duration(200)
             .style("opacity", 0.8)
             .attr("dy", "0.31em")
@@ -423,9 +265,7 @@ function updateData(file, graphRadius) {
 
 function addSubtext(d, selection) {
     if (d.data.subtext) {
-        // let length = d.data.key.length;
         let length = selection.textLength.baseVal.value;
-        console.log("QUA ", length);
         d3.select(selection)
             .append("tspan")
             .attr("dy", "1.31em")
@@ -451,14 +291,12 @@ function packageHierarchy(classes) {
                 node.key = name.substring(i + 1);
             }
         }
-
         return node;
     }
 
     classes.forEach(function(d) {
         find(d.name, d);
     });
-    console.log("Map: ", map);
     return d3.hierarchy(map[""]);
 }
 
@@ -479,22 +317,22 @@ function packageImports(nodes) {
                 imports.push(map[d.data.name].path(map[i]));
             });
     });
-    //console.log(imports);
     return imports;
 }
 
-function showProjects() {
+async function showProjects() {
     clearSvg();
     updateData("./menuJsons/projects.json", 360);
+    await clearTitles();
     setCurrentPage("projects");
     updateHistory();
+    type(subtitle, texts.projects);
 }
 
-function showHome() {
+async function showHome() {
     clearSvg();
-
-    //document.getElementsByClassName("mainG")[0].style.transform = "rotate(0deg)";
     updateData("./menuJsons/home.json", 360);
+    await clearTitles();
     setCurrentPage("home");
     setTimeout(() => {
         type(title, texts.homeTitle);
@@ -503,21 +341,19 @@ function showHome() {
     updateHistory();
 }
 
-function clearPath() {
-    clearSvg();
-    updateData("./menuJsons/empty.json", 360);
-}
-
-function showLavori() {
+async function showLavori() {
     clearSvg();
     updateData("./menuJsons/lavori.json", 300);
+    await clearTitles();
     setCurrentPage("lavori");
     updateHistory();
+    type(subtitle, texts.lavori);
 }
 
-function showInfo() {
+async function showInfo() {
     clearSvg();
     updateData("./menuJsons/info.json", 300);
+    await clearTitles();
     setTimeout(appendInfo, appendedElementsDelay);
     setCurrentPage("info");
     updateHistory();
@@ -541,19 +377,31 @@ function appendInfo() {
     div.style.top = rootRect.top + "px";
     div.style.left = rootRect.left + "px";
     document.getElementById("radialMenu").append(div);
-    drawInfoLine();
-    // setTimeout(drawInfoLine, 200);
 }
 
-function drawInfoLine() {
-    let departureElement = document.getElementById("sudimePathStart");
-    let departureCoord = extractPathStartingValue(departureElement);
-    let svgRect = document
-        .getElementsByClassName("rootG")[0]
-        .getBoundingClientRect();
-    let arrivalRect = document
-        .getElementById("descriptionBox")
-        .getBoundingClientRect();
+async function drawInfoLine() {
+    let departureElement = await tryGetStuff(
+        function() {
+            return this.getElementById("sudimePathStart");
+        }.bind(document)
+    );
+    console.log("departureElement: ", departureElement);
+    if (!departureElement) {
+        return true;
+    }
+    let departureCoord = await extractPathStartingValue(departureElement);
+    console.log("departureCoord: ", departureCoord);
+    let svgRect = await tryGetStuff(
+        function() {
+            return this.getElementsByClassName("rootG")[0].getBoundingClientRect();
+        }.bind(document)
+    );
+    console.log("SVG RECT: ", svgRect);
+    let arrivalRect = await tryGetStuff(
+        function() {
+            return this.getElementById("descriptionBox").getBoundingClientRect();
+        }.bind(document)
+    );
     let arrivalX = -(width / 2 - arrivalRect.x) + arrivalRect.width / 2 - headingHeight;
     let arrivalY = -(height / 2 - arrivalRect.y) + arrivalRect.height - headingHeight;
     const path = d3.path();
@@ -569,8 +417,29 @@ function drawInfoLine() {
         });
 }
 
-function extractPathStartingValue(el) {
-    let d = el.getAttribute("d");
+async function tryGetStuff(func) {
+    console.log(func);
+    let result,
+        i = 0;
+    while (true) {
+        console.log("check");
+        i++;
+        result = func();
+        if (result || i == 50) {
+            break;
+        }
+        await new Promise((resolve, reject) => setTimeout(resolve, 50));
+    }
+    return result;
+}
+
+async function extractPathStartingValue(el) {
+    let d = await tryGetStuff(
+        function() {
+            return this.getAttribute("d");
+        }.bind(el)
+    );
+    console.log(d);
     let start = d.indexOf("M");
     let end = d.indexOf("L");
     d = d.slice(start + 1, end);
@@ -588,7 +457,6 @@ function clearSvg() {
             pathCanceling(path);
         }
     }
-    clearTitles();
 }
 
 function hashChange() {

@@ -1,7 +1,7 @@
 import { strokeColor } from "./config";
 
 function pathDrawing(element) {
-    let distancePerPoint = 2;
+    let distancePerPoint = 4;
     let drawFPS = 160;
     let length, timer;
 
@@ -30,7 +30,7 @@ function pathDrawing(element) {
 }
 
 function pathCanceling(element) {
-    let distancePerPoint = 2;
+    let distancePerPoint = 4;
     let drawFPS = 160;
     let length, timer;
 
