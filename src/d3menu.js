@@ -1,14 +1,11 @@
 import { infoDescription, appendedElementsDelay, competenze } from "./config";
 import * as d3 from "d3";
 import { pathDrawing, pathCanceling } from "./strokeAnimation";
-import { updateHistory, setCurrentPage } from "./historyPush";
+import { updateHistory, setCurrentPage, currentPage } from "./historyPush";
 import { texts, type, clearTitles } from "./typing";
 
-//https://bl.ocks.org/mbostock/1044242
-
-let clusterRadius = 180;
-let transitionDuration = 1000;
-const exitRemoveDelay = 2000;
+const transitionDuration = 1000;
+const exitRemoveDelay = 1000;
 const title = document.getElementById("title");
 const subtitle = document.getElementById("subtitle");
 const headingHeight = 70;
@@ -19,16 +16,24 @@ var root;
 var svg;
 var node;
 var link;
-let height =
-    window.innerHeight ||
-    document.documentElement.clientHeight ||
-    document.body.clientHeight;
-let width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth;
 let responsiveSettingsTable = {};
 let responsiveSettings;
+let height;
+let width;
+let globalSvgSettings;
+let timeout = false;
+
+function onResize() {
+    d3.select("svg").remove();
+    height =
+        window.innerHeight ||
+        document.documentElement.clientHeight ||
+        document.body.clientHeight;
+    width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth;
+}
 
 function setResponsiveSettings(width) {
     if (width < 511) {
@@ -40,29 +45,43 @@ function setResponsiveSettings(width) {
     }
 }
 
-const globalSvgSettings = {
-    rootGTranslate: [
-        Math.round(Math.round(width) / 2),
-        Math.round(Math.round(height) / 2 - 70),
-    ],
-    svgHeight: Math.round(height),
-    svgWidth: Math.round(width),
-};
+function setGlobalSvgDettings() {
+    globalSvgSettings = {
+        rootGTranslate: [
+            Math.round(Math.round(width) / 2),
+            Math.round(Math.round(height) / 2 - (headingHeight - 10)),
+        ],
+        svgHeight: Math.round(height),
+        svgWidth: Math.round(width),
+    };
+}
 
-//TODO: transform relativo a dimensione svg
-window.onload = function() {
+window.onload = init;
+window.addEventListener("resize", function() {
+    // clear the timeout
+    clearTimeout(timeout);
+    // start timing for event "completion"
+    timeout = setTimeout(init, 200);
+});
+
+function init() {
+    onResize();
+    setGlobalSvgDettings();
     responsiveSettingsTable = {
+        //max-width 511px
         xs: {
             width: Math.round(width * 0.5),
             height: Math.round(height * 0.5) - headingHeight,
-            scale: 0.6,
+            scale: 1,
             descriptionBoxTranslate: "translate(0%, 0%)",
+            translatedSvg: true,
+            hrefTextAnchorStart: true,
         },
         //max-width 639px
         sm: {
             width: Math.round(width * 0.5),
             height: Math.round(height * 0.5) - headingHeight,
-            scale: 0.9,
+            scale: 1,
             descriptionBoxTranslate: "translate(-48%, 56%)",
         },
         //min-width 640px
@@ -76,7 +95,12 @@ window.onload = function() {
 
     responsiveSettings = setResponsiveSettings(width);
 
-    cluster = d3.cluster().size([360, responsiveSettings.width]);
+    cluster = d3
+        .cluster()
+        .size([
+            360,
+            responsiveSettings.width / 2 > 150 ? 150 : responsiveSettings.width / 2,
+        ]);
 
     line = d3
         .lineRadial()
@@ -110,14 +134,26 @@ window.onload = function() {
         );
     node = svg.append("g");
     link = svg.append("g");
+    switch (currentPage) {
+        case "home":
+            showHome();
+            break;
+        case "info":
+            showInfo();
+            break;
+        case "projects":
+            showProjects();
+            break;
+        case "lavori":
+            showLavori();
+            break;
 
-    showHome();
-};
-
-function updateData(file, graphRadius) {
-    if (graphRadius) {
-        cluster.size([graphRadius, clusterRadius]);
+        default:
+            break;
     }
+}
+
+function updateData(file) {
     d3.json(file).then(function(classes) {
         root = packageHierarchy(classes).sum(function(d) {
             return d.size;
@@ -131,6 +167,7 @@ function updateData(file, graphRadius) {
                     return enter
                         .append("path")
                         .style("opacity", 1)
+                        .style("fill", "none")
                         .each(function(d, i) {
                             setTimeout(() => {
                                 pathDrawing(this);
@@ -247,17 +284,21 @@ function updateData(file, graphRadius) {
             .style("opacity", 0.8)
             .attr("dy", "0.31em")
             .attr("transform", function(d) {
-                let angle = 0;
                 return (
                     "rotate(" +
                     (d.x - 90) +
                     ")translate(" +
                     (d.y + 8) +
                     ",0)" +
-                    (d.x < 180 ? "" : "rotate(" + (180 - angle) + ")")
+                    (d.x < 180 ? "" : "rotate(" + 180 + ")")
                 );
             })
             .attr("text-anchor", function(d) {
+                //return "middle";
+                // console.log(d);
+                if (d.data.url) {
+                    return "middle";
+                }
                 return d.x < 180 ? "start" : "end";
             });
     });
@@ -322,6 +363,7 @@ function packageImports(nodes) {
 
 async function showProjects() {
     clearSvg();
+    showTitle();
     updateData("./menuJsons/projects.json", 360);
     await clearTitles();
     setCurrentPage("projects");
@@ -331,17 +373,22 @@ async function showProjects() {
 
 async function showHome() {
     clearSvg();
+    showTitle();
     updateData("./menuJsons/home.json", 360);
     await clearTitles();
     setCurrentPage("home");
     setTimeout(() => {
-        type(title, texts.homeTitle);
+        // type(title, texts.homeTitle);
         type(subtitle, texts.homeDescription);
     }, 60);
     updateHistory();
 }
 
 async function showLavori() {
+    showTitle();
+    // if (responsiveSettings.translatedSvg) {
+    //     d3.select("svg").attr("transform", "rotate(80deg)");
+    // }
     clearSvg();
     updateData("./menuJsons/lavori.json", 300);
     await clearTitles();
@@ -352,6 +399,8 @@ async function showLavori() {
 
 async function showInfo() {
     clearSvg();
+    // d3.select("svg").attr("transform", "rotate(0deg)");
+    hideTitle();
     updateData("./menuJsons/info.json", 300);
     await clearTitles();
     setTimeout(appendInfo, appendedElementsDelay);
@@ -372,10 +421,6 @@ function appendInfo() {
     let c = document.createElement("p");
     c.append(competenze);
     div.append(c);
-    let rootG = document.getElementsByClassName("rootG")[0];
-    let rootRect = rootG.getBoundingClientRect();
-    div.style.top = rootRect.top + "px";
-    div.style.left = rootRect.left + "px";
     document.getElementById("radialMenu").append(div);
 }
 
@@ -451,6 +496,14 @@ function clearSvg() {
             pathCanceling(path);
         }
     }
+}
+
+function showTitle() {
+    document.getElementById("title").style.opacity = 1;
+}
+
+function hideTitle() {
+    document.getElementById("title").style.opacity = 0;
 }
 
 function hashChange() {

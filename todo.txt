@@ -10,6 +10,8 @@ In altre parole ho studiato Lingue e Letterature Straniere (statale di Milano) e
 In 'Portfolio' potete vedere alcuni siti fatti da me mentre in 'Progetti' potete vedere alcuni progetti personali.
 Non esitate a scrivermi per info o preventivi.
 
+
+//https://bl.ocks.org/mbostock/1044242
 TO DO:
 
 -d3menu.js:422 Uncaught TypeError: Cannot read properties of null (reading 'getAttribute') - quando clicco su info prima che finisca transizione?

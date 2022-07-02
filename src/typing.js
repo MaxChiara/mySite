@@ -33,6 +33,6 @@ export async function cancelText(element) {
 }
 
 export async function clearTitles() {
-    await cancelText(document.getElementById("title"));
+    // await cancelText(document.getElementById("title"));
     await cancelText(document.getElementById("subtitle"));
 }

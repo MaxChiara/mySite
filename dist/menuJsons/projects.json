@@ -28,7 +28,7 @@
     {
         "name": "A.B.Events Search App",
         "imports": ["A.Progetti"],
-        "subtext": "React, Tailwind, Material UI",
+        "subtext": "React, Tailwind",
         "url": "https://iridescent-clafoutis-ada50f.netlify.app/",
         "class": "href"
     },

@@ -84,7 +84,7 @@ function setResponsiveSettings(width) {
 }
 
 var globalSvgSettings = {
-  rootGTranslate: [Math.round(Math.round(width) / 2), Math.round(Math.round(height) / 2 - 70)],
+  rootGTranslate: [Math.round(Math.round(width) / 2), Math.round(Math.round(height) / 2 - (headingHeight - 10))],
   svgHeight: Math.round(height),
   svgWidth: Math.round(width)
 }; //TODO: transform relativo a dimensione svg
@@ -136,7 +136,7 @@ function updateData(file, graphRadius) {
     });
     cluster(root);
     link.selectAll("path").data(packageImports(root.leaves())).join(function (enter) {
-      return enter.append("path").style("opacity", 1).each(function (d, i) {
+      return enter.append("path").style("opacity", 1).style("fill", "none").each(function (d, i) {
         var _this = this;
 
         setTimeout(function () {
@@ -228,7 +228,7 @@ function updateData(file, graphRadius) {
       var angle = 0;
       return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(" + (180 - angle) + ")");
     }).attr("text-anchor", function (d) {
-      return d.x < 180 ? "start" : "end";
+      return "middle"; // return d.x < 180 ? "start" : "end";
     });
   });
 }
@@ -298,16 +298,17 @@ function _showProjects() {
         switch (_context.prev = _context.next) {
           case 0:
             clearSvg();
+            showTitle();
             updateData("./menuJsons/projects.json", 360);
-            _context.next = 4;
+            _context.next = 5;
             return (0,_typing__WEBPACK_IMPORTED_MODULE_4__.clearTitles)();
 
-          case 4:
+          case 5:
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.setCurrentPage)("projects");
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.updateHistory)();
             (0,_typing__WEBPACK_IMPORTED_MODULE_4__.type)(subtitle, _typing__WEBPACK_IMPORTED_MODULE_4__.texts.projects);
 
-          case 7:
+          case 8:
           case "end":
             return _context.stop();
         }
@@ -328,19 +329,20 @@ function _showHome() {
         switch (_context2.prev = _context2.next) {
           case 0:
             clearSvg();
+            showTitle();
             updateData("./menuJsons/home.json", 360);
-            _context2.next = 4;
+            _context2.next = 5;
             return (0,_typing__WEBPACK_IMPORTED_MODULE_4__.clearTitles)();
 
-          case 4:
+          case 5:
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.setCurrentPage)("home");
             setTimeout(function () {
-              (0,_typing__WEBPACK_IMPORTED_MODULE_4__.type)(title, _typing__WEBPACK_IMPORTED_MODULE_4__.texts.homeTitle);
+              // type(title, texts.homeTitle);
               (0,_typing__WEBPACK_IMPORTED_MODULE_4__.type)(subtitle, _typing__WEBPACK_IMPORTED_MODULE_4__.texts.homeDescription);
             }, 60);
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.updateHistory)();
 
-          case 7:
+          case 8:
           case "end":
             return _context2.stop();
         }
@@ -360,17 +362,18 @@ function _showLavori() {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
+            showTitle();
             clearSvg();
             updateData("./menuJsons/lavori.json", 300);
-            _context3.next = 4;
+            _context3.next = 5;
             return (0,_typing__WEBPACK_IMPORTED_MODULE_4__.clearTitles)();
 
-          case 4:
+          case 5:
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.setCurrentPage)("lavori");
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.updateHistory)();
             (0,_typing__WEBPACK_IMPORTED_MODULE_4__.type)(subtitle, _typing__WEBPACK_IMPORTED_MODULE_4__.texts.lavori);
 
-          case 7:
+          case 8:
           case "end":
             return _context3.stop();
         }
@@ -392,16 +395,17 @@ function _showInfo() {
         switch (_context4.prev = _context4.next) {
           case 0:
             clearSvg();
+            hideTitle();
             updateData("./menuJsons/info.json", 300);
-            _context4.next = 4;
+            _context4.next = 5;
             return (0,_typing__WEBPACK_IMPORTED_MODULE_4__.clearTitles)();
 
-          case 4:
+          case 5:
             setTimeout(appendInfo, _config__WEBPACK_IMPORTED_MODULE_0__.appendedElementsDelay);
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.setCurrentPage)("info");
             (0,_historyPush__WEBPACK_IMPORTED_MODULE_3__.updateHistory)();
 
-          case 7:
+          case 8:
           case "end":
             return _context4.stop();
         }
@@ -449,36 +453,33 @@ function _drawInfoLine() {
 
           case 2:
             departureElement = _context5.sent;
-            console.log("departureElement: ", departureElement);
 
             if (departureElement) {
-              _context5.next = 6;
+              _context5.next = 5;
               break;
             }
 
             return _context5.abrupt("return", true);
 
-          case 6:
-            _context5.next = 8;
+          case 5:
+            _context5.next = 7;
             return extractPathStartingValue(departureElement);
 
-          case 8:
+          case 7:
             departureCoord = _context5.sent;
-            console.log("departureCoord: ", departureCoord);
-            _context5.next = 12;
+            _context5.next = 10;
             return tryGetStuff(function () {
               return this.getElementsByClassName("rootG")[0].getBoundingClientRect();
             }.bind(document));
 
-          case 12:
+          case 10:
             svgRect = _context5.sent;
-            console.log("SVG RECT: ", svgRect);
-            _context5.next = 16;
+            _context5.next = 13;
             return tryGetStuff(function () {
               return this.getElementById("descriptionBox").getBoundingClientRect();
             }.bind(document));
 
-          case 16:
+          case 13:
             arrivalRect = _context5.sent;
             arrivalX = -(width / 2 - arrivalRect.x) + arrivalRect.width / 2 - headingHeight;
             arrivalY = -(height / 2 - arrivalRect.y) + arrivalRect.height - headingHeight;
@@ -489,7 +490,7 @@ function _drawInfoLine() {
               (0,_strokeAnimation__WEBPACK_IMPORTED_MODULE_2__.pathDrawing)(this);
             });
 
-          case 23:
+          case 20:
           case "end":
             return _context5.stop();
         }
@@ -510,37 +511,35 @@ function _tryGetStuff() {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
-            console.log(func);
             i = 0;
 
-          case 2:
+          case 1:
             if (false) {}
 
-            console.log("check");
             i++;
             result = func();
 
             if (!(result || i == 50)) {
-              _context6.next = 8;
+              _context6.next = 6;
               break;
             }
 
-            return _context6.abrupt("break", 12);
+            return _context6.abrupt("break", 10);
 
-          case 8:
-            _context6.next = 10;
+          case 6:
+            _context6.next = 8;
             return new Promise(function (resolve, reject) {
               return setTimeout(resolve, 50);
             });
 
-          case 10:
-            _context6.next = 2;
+          case 8:
+            _context6.next = 1;
             break;
 
-          case 12:
+          case 10:
             return _context6.abrupt("return", result);
 
-          case 13:
+          case 11:
           case "end":
             return _context6.stop();
         }
@@ -568,13 +567,12 @@ function _extractPathStartingValue() {
 
           case 2:
             d = _context7.sent;
-            console.log(d);
             start = d.indexOf("M");
             end = d.indexOf("L");
             d = d.slice(start + 1, end);
             return _context7.abrupt("return", [+d.split(",")[0], +d.split(",")[1]]);
 
-          case 8:
+          case 7:
           case "end":
             return _context7.stop();
         }
@@ -608,6 +606,14 @@ function clearSvg() {
       _iterator.f();
     }
   }
+}
+
+function showTitle() {
+  document.getElementById("title").style.opacity = 1;
+}
+
+function hideTitle() {
+  document.getElementById("title").style.opacity = 0;
 }
 
 function hashChange() {
@@ -888,13 +894,9 @@ function _clearTitles() {
         switch (_context3.prev = _context3.next) {
           case 0:
             _context3.next = 2;
-            return cancelText(document.getElementById("title"));
-
-          case 2:
-            _context3.next = 4;
             return cancelText(document.getElementById("subtitle"));
 
-          case 4:
+          case 2:
           case "end":
             return _context3.stop();
         }

@@ -4,7 +4,7 @@ entry.url -> chiama il value url del Map data, dove ad ogni elemento di 'pages' 
             ovvero in questo caso data.get(currentPage);
 
 */
-let currentPage = "home";
+export let currentPage = "home";
 
 export function setCurrentPage(value) {
     currentPage = value;
