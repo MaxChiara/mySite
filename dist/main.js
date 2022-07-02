@@ -54,11 +54,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
- //https://bl.ocks.org/mbostock/1044242
 
-var clusterRadius = 180;
 var transitionDuration = 1000;
-var exitRemoveDelay = 2000;
+var exitRemoveDelay = 1000;
 var title = document.getElementById("title");
 var subtitle = document.getElementById("subtitle");
 var headingHeight = 70;
@@ -68,10 +66,18 @@ var root;
 var svg;
 var node;
 var link;
-var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 var responsiveSettingsTable = {};
 var responsiveSettings;
+var height;
+var width;
+var globalSvgSettings;
+var timeout = false;
+
+function onResize() {
+  d3__WEBPACK_IMPORTED_MODULE_1__.select("svg").remove();
+  height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+  width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+}
 
 function setResponsiveSettings(width) {
   if (width < 511) {
@@ -83,25 +89,40 @@ function setResponsiveSettings(width) {
   }
 }
 
-var globalSvgSettings = {
-  rootGTranslate: [Math.round(Math.round(width) / 2), Math.round(Math.round(height) / 2 - (headingHeight - 10))],
-  svgHeight: Math.round(height),
-  svgWidth: Math.round(width)
-}; //TODO: transform relativo a dimensione svg
+function setGlobalSvgDettings() {
+  globalSvgSettings = {
+    rootGTranslate: [Math.round(Math.round(width) / 2), Math.round(Math.round(height) / 2 - (headingHeight - 10))],
+    svgHeight: Math.round(height),
+    svgWidth: Math.round(width)
+  };
+}
 
-window.onload = function () {
+window.onload = init;
+window.addEventListener("resize", function () {
+  // clear the timeout
+  clearTimeout(timeout); // start timing for event "completion"
+
+  timeout = setTimeout(init, 200);
+});
+
+function init() {
+  onResize();
+  setGlobalSvgDettings();
   responsiveSettingsTable = {
+    //max-width 511px
     xs: {
       width: Math.round(width * 0.5),
       height: Math.round(height * 0.5) - headingHeight,
-      scale: 0.6,
-      descriptionBoxTranslate: "translate(0%, 0%)"
+      scale: 1,
+      descriptionBoxTranslate: "translate(0%, 0%)",
+      translatedSvg: true,
+      hrefTextAnchorStart: true
     },
     //max-width 639px
     sm: {
       width: Math.round(width * 0.5),
       height: Math.round(height * 0.5) - headingHeight,
-      scale: 0.9,
+      scale: 1,
       descriptionBoxTranslate: "translate(-48%, 56%)"
     },
     //min-width 640px
@@ -113,7 +134,7 @@ window.onload = function () {
     }
   };
   responsiveSettings = setResponsiveSettings(width);
-  cluster = d3__WEBPACK_IMPORTED_MODULE_1__.cluster().size([360, responsiveSettings.width]);
+  cluster = d3__WEBPACK_IMPORTED_MODULE_1__.cluster().size([360, responsiveSettings.width / 2 > 150 ? 150 : responsiveSettings.width / 2]);
   line = d3__WEBPACK_IMPORTED_MODULE_1__.lineRadial().curve(d3__WEBPACK_IMPORTED_MODULE_1__.curveBundle.beta(0.85)).radius(function (d) {
     return d.y;
   }).angle(function (d) {
@@ -122,14 +143,30 @@ window.onload = function () {
   svg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#radialMenu").append("svg").attr("width", globalSvgSettings.svgWidth).attr("height", globalSvgSettings.svgHeight - headingHeight).style("margin", "auto auto auto 0").append("g").attr("class", "rootG").style("transform", "translate(" + globalSvgSettings.rootGTranslate[0] + "px, " + globalSvgSettings.rootGTranslate[1] + "px) rotate(" + 0 + "deg) scale(" + responsiveSettings.scale + ")");
   node = svg.append("g");
   link = svg.append("g");
-  showHome();
-};
 
-function updateData(file, graphRadius) {
-  if (graphRadius) {
-    cluster.size([graphRadius, clusterRadius]);
+  switch (_historyPush__WEBPACK_IMPORTED_MODULE_3__.currentPage) {
+    case "home":
+      showHome();
+      break;
+
+    case "info":
+      showInfo();
+      break;
+
+    case "projects":
+      showProjects();
+      break;
+
+    case "lavori":
+      showLavori();
+      break;
+
+    default:
+      break;
   }
+}
 
+function updateData(file) {
   d3__WEBPACK_IMPORTED_MODULE_1__.json(file).then(function (classes) {
     root = packageHierarchy(classes).sum(function (d) {
       return d.size;
@@ -225,10 +262,15 @@ function updateData(file, graphRadius) {
     }).each(function (d) {
       addSubtext(d, this);
     }).transition().duration(200).style("opacity", 0.8).attr("dy", "0.31em").attr("transform", function (d) {
-      var angle = 0;
-      return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(" + (180 - angle) + ")");
+      return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(" + 180 + ")");
     }).attr("text-anchor", function (d) {
-      return "middle"; // return d.x < 180 ? "start" : "end";
+      //return "middle";
+      // console.log(d);
+      if (d.data.url) {
+        return "middle";
+      }
+
+      return d.x < 180 ? "start" : "end";
     });
   });
 }
@@ -362,7 +404,10 @@ function _showLavori() {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            showTitle();
+            showTitle(); // if (responsiveSettings.translatedSvg) {
+            //     d3.select("svg").attr("transform", "rotate(80deg)");
+            // }
+
             clearSvg();
             updateData("./menuJsons/lavori.json", 300);
             _context3.next = 5;
@@ -394,7 +439,8 @@ function _showInfo() {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
-            clearSvg();
+            clearSvg(); // d3.select("svg").attr("transform", "rotate(0deg)");
+
             hideTitle();
             updateData("./menuJsons/info.json", 300);
             _context4.next = 5;
@@ -428,10 +474,6 @@ function appendInfo() {
   var c = document.createElement("p");
   c.append(_config__WEBPACK_IMPORTED_MODULE_0__.competenze);
   div.append(c);
-  var rootG = document.getElementsByClassName("rootG")[0];
-  var rootRect = rootG.getBoundingClientRect();
-  div.style.top = rootRect.top + "px";
-  div.style.left = rootRect.left + "px";
   document.getElementById("radialMenu").append(div);
 }
 
@@ -656,6 +698,7 @@ window.addEventListener("hashchange", hashChange, false);
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "currentPage": function() { return /* binding */ currentPage; },
 /* harmony export */   "data": function() { return /* binding */ data; },
 /* harmony export */   "hashes": function() { return /* binding */ hashes; },
 /* harmony export */   "setCurrentPage": function() { return /* binding */ setCurrentPage; },

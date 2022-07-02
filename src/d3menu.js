@@ -1,6 +1,5 @@
-import { infoDescription, appendedElementsDelay, competenze } from "./config";
+import { infoDescription, competenze, strokeColor } from "./config";
 import * as d3 from "d3";
-import { pathDrawing, pathCanceling } from "./strokeAnimation";
 import { updateHistory, setCurrentPage, currentPage } from "./historyPush";
 import { texts, type, clearTitles } from "./typing";
 
@@ -164,56 +163,59 @@ function updateData(file) {
             .data(packageImports(root.leaves()))
             .join(
                 function(enter) {
-                    return enter
+                    return (
+                        enter
                         .append("path")
-                        .style("opacity", 1)
+                        //.style("opacity", 0)
                         .style("fill", "none")
-                        .each(function(d, i) {
-                            setTimeout(() => {
-                                pathDrawing(this);
-                            }, 100 * i);
-                        });
+                        .attr("d", line)
+                        .attr("stroke-dasharray", function() {
+                            return this.getTotalLength();
+                        })
+                        .attr("stroke-dashoffset", function() {
+                            return this.getTotalLength();
+                        })
+                        .transition()
+                        .duration(transitionDuration)
+                        .attr("stroke-dashoffset", 0)
+                        .on("end", function(d) {
+                            if (d.source.data.key == "Su di me") {
+                                drawInfoLine();
+                            }
+                        })
+                    );
                 },
                 function(update) {
-                    return update.style("opacity", function() {
-                        if (file.includes("home.json")) {
-                            return 1;
-                        } else {
-                            return 0.5;
-                        }
-                    });
+                    return update
+                        .transition()
+                        .duration(transitionDuration)
+                        .style("opacity", function() {
+                            if (file.includes("home.json")) {
+                                return 1;
+                            } else {
+                                return 0.5;
+                            }
+                        })
+                        .attr("d", line);
                 },
                 function(exit) {
                     return exit
-                        .each(function(d, i) {
-                            pathCanceling(this);
+                        .transition()
+                        .attr("stroke-dashoffset", function() {
+                            return this.getTotalLength();
                         })
-                        .call(function() {
-                            setTimeout(() => {
-                                exit.remove();
-                            }, exitRemoveDelay);
-                        });
+                        .duration(transitionDuration)
+                        .remove();
                 }
             )
+            .style("stroke", strokeColor)
             .attr("class", "link")
             .attr("id", function(d) {
                 if (d[0].data.name == "B.Su di me") return "sudimePathStart";
                 else return null;
             })
-            .transition()
-            .delay(function(d, i) {
-                return i * 75;
-            })
-            .duration(transitionDuration)
-            .ease(d3.easeCubicIn)
             .each(function(d) {
                 (d.source = d[0]), (d.target = d[d.length - 1]);
-            })
-            .attr("d", line)
-            .on("end", function(d) {
-                if (d.source.data.key == "Su di me") {
-                    drawInfoLine();
-                }
             });
 
         node
@@ -294,8 +296,6 @@ function updateData(file) {
                 );
             })
             .attr("text-anchor", function(d) {
-                //return "middle";
-                // console.log(d);
                 if (d.data.url) {
                     return "middle";
                 }
@@ -378,7 +378,6 @@ async function showHome() {
     await clearTitles();
     setCurrentPage("home");
     setTimeout(() => {
-        // type(title, texts.homeTitle);
         type(subtitle, texts.homeDescription);
     }, 60);
     updateHistory();
@@ -386,9 +385,6 @@ async function showHome() {
 
 async function showLavori() {
     showTitle();
-    // if (responsiveSettings.translatedSvg) {
-    //     d3.select("svg").attr("transform", "rotate(80deg)");
-    // }
     clearSvg();
     updateData("./menuJsons/lavori.json", 300);
     await clearTitles();
@@ -399,11 +395,10 @@ async function showLavori() {
 
 async function showInfo() {
     clearSvg();
-    // d3.select("svg").attr("transform", "rotate(0deg)");
     hideTitle();
     updateData("./menuJsons/info.json", 300);
     await clearTitles();
-    setTimeout(appendInfo, appendedElementsDelay);
+    appendInfo();
     setCurrentPage("info");
     updateHistory();
 }
@@ -452,11 +447,17 @@ async function drawInfoLine() {
     link
         .append("path")
         .attr("d", path)
-        .attr("stroke", "black")
         .attr("class", "manualRemove")
-        .each(function() {
-            pathDrawing(this);
-        });
+        .style("stroke", strokeColor)
+        .attr("stroke-dasharray", function() {
+            return this.getTotalLength();
+        })
+        .attr("stroke-dashoffset", function() {
+            return this.getTotalLength();
+        })
+        .transition()
+        .duration(transitionDuration)
+        .attr("stroke-dashoffset", 0);
 }
 
 async function tryGetStuff(func) {
@@ -493,7 +494,7 @@ function clearSvg() {
     let paths = document.getElementsByClassName("manualRemove");
     if (paths) {
         for (let path of paths) {
-            pathCanceling(path);
+            path.remove();
         }
     }
 }

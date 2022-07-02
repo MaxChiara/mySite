@@ -560,6 +560,8 @@ Ensure the default browser behavior of the `hidden` attribute.
 p,
 a,
 text,
+span,
+tspan,
 h1,
 h2,
 h3,
@@ -655,7 +657,6 @@ text {
 
 .href {
   fill: rgb(202, 230, 255);
-  font-size: 13px;
 }
 
 .href:hover {
@@ -668,15 +669,16 @@ text {
   -webkit-transition: opacity 0.5s ease-out;
   transition: opacity 0.5s ease-out;
   position: absolute;
-  max-width: 23rem;
+  top: -9%;
+  left: 10%;
+  max-width: 100vw;
   background-color: rgba(15, 15, 15, 0);
   color: rgba(255, 255, 255, 0.8196078431);
-  -webkit-transform: translate(-20%, -70%);
-          transform: translate(-20%, -70%);
+  width: 85%;
 }
 
 #descriptionBox p {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 @-webkit-keyframes fadeIn {
@@ -698,46 +700,39 @@ text {
 }
 @media screen and (max-width: 639px) {
   #descriptionBox {
-    max-width: 100vw;
-    width: 50%;
     text-align: center;
-    -webkit-transform: translate(-30%, -109%);
-            transform: translate(-30%, -109%);
   }
 
   #descriptionBox p {
-    font-size: 11px;
-  }
-
-  .href {
-    text-anchor: middle;
+    font-size: 12px;
+    top: -7%;
   }
 }
 @media screen and (max-width: 420px) {
   p,
 a,
 text,
+span,
+tspan,
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   #descriptionBox {
-    width: 90%;
-    -webkit-transform: translate(-10%, -148%);
-            transform: translate(-10%, -148%);
+    width: 100%;
+    padding: 0 10px;
+    top: -10%;
+    left: 0%;
+    max-width: none;
   }
 
   #descriptionBox p {
     font-size: 11px;
-  }
-
-  .href {
-    text-anchor: middle;
   }
 }
 
