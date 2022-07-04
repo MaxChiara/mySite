@@ -19,25 +19,17 @@
         "class": "home"
     },
     {
+        "name": "A.B.Events Search App",
+        "imports": ["A.Progetti"],
+        "subtext": "React",
+        "url": "https://iridescent-clafoutis-ada50f.netlify.app/",
+        "class": "href"
+    },
+    {
         "name": "A.B.Crypto Coins Data",
         "imports": ["A.Progetti"],
         "subtext": "Javascript, Node.js, D3",
         "class": "href",
         "url": "https://glacial-meadow-11946.herokuapp.com/"
-    },
-    {
-        "name": "A.B.Events Search App",
-        "imports": ["A.Progetti"],
-        "subtext": "React, Tailwind",
-        "url": "https://iridescent-clafoutis-ada50f.netlify.app/",
-        "class": "href"
-    },
-    {
-        "name": "A.B.Images and videos gallery",
-        "imports": ["A.Progetti"],
-        "subtext": "React, Tailwind",
-        "url": "https://kaleidoscopic-halva-d4e3c1.netlify.app/",
-        "class": "href"
     }
-
 ]

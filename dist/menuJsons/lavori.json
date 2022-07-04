@@ -19,7 +19,6 @@
     {
         "name": "A.B.Uao Skateparks website",
         "imports": ["A.Lavori"],
-        "subtext": "From skaters to skaters",
         "url": "https://www.uaoskateparks.it/",
         "class": "href"
     }

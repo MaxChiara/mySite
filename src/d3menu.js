@@ -201,10 +201,11 @@ function updateData(file) {
                 function(exit) {
                     return exit
                         .transition()
+                        .duration(transitionDuration)
                         .attr("stroke-dashoffset", function() {
                             return this.getTotalLength();
                         })
-                        .duration(transitionDuration)
+                        .style("opacity", 0)
                         .remove();
                 }
             )

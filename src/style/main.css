@@ -12,7 +12,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: "Montserrat", sans-serif;
+    font-family: "Titillium Web", sans-serif;
     font-size: 12px;
 }
 
@@ -49,7 +49,10 @@ header h2 {
 path {
     transition: opacity 0.5s ease-in;
     stroke-opacity: 0.5;
-    /* stroke-dasharray: 0 1; */
+}
+
+.pulsing {
+    animation: pulsing 1s cubic-bezier(1, -0.1, 0.9, 0.16) infinite alternate;
 }
 
 #radialMenu {
@@ -117,6 +120,15 @@ text {
     }
     to {
         opacity: 1;
+    }
+}
+
+@keyframes pulsing {
+    from {
+        stroke: rgb(70, 130, 180);
+    }
+    to {
+        stroke: rgb(116, 159, 194);
     }
 }
 
