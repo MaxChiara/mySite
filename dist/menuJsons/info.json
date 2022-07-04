@@ -24,5 +24,15 @@
     {
         "name": "B.Su di me",
         "imports": ["A.Info"]
+    },
+    {
+        "name": "B.Github",
+        "imports": ["A.Info"],
+        "url": "https://github.com/MaxChiara"
+    },
+    {
+        "name": "B.LinkedIn",
+        "imports": ["A.Info"],
+        "url": "https://it.linkedin.com/in/massimiliano-chiara-128a7944"
     }
 ]
