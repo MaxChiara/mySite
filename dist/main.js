@@ -190,9 +190,9 @@ function updateData(file) {
         }
       }).attr("d", line);
     }, function (exit) {
-      return exit.transition().attr("stroke-dashoffset", function () {
+      return exit.transition().duration(transitionDuration).attr("stroke-dashoffset", function () {
         return this.getTotalLength();
-      }).duration(transitionDuration).remove();
+      }).style("opacity", 0).remove();
     }).style("stroke", _config__WEBPACK_IMPORTED_MODULE_0__.strokeColor).attr("class", "link").attr("id", function (d) {
       if (d[0].data.name == "B.Su di me") return "sudimePathStart";else return null;
     }).each(function (d) {

@@ -568,7 +568,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Titillium Web", sans-serif;
   font-size: 12px;
 }
 
@@ -607,7 +607,8 @@ path {
   -webkit-transition: opacity 0.5s ease-in;
   transition: opacity 0.5s ease-in;
   stroke-opacity: 0.5;
-  /* stroke-dasharray: 0 1; */
+  -webkit-animation: pulsing 4s cubic-bezier(1, -0.1, 0.9, 0.16) 1s infinite alternate;
+          animation: pulsing 4s cubic-bezier(1, -0.1, 0.9, 0.16) 1s infinite alternate;
 }
 
 #radialMenu {
@@ -696,6 +697,22 @@ text {
   }
   to {
     opacity: 1;
+  }
+}
+@-webkit-keyframes pulsing {
+  from {
+    stroke: rgb(70, 130, 180);
+  }
+  to {
+    stroke: rgb(90, 157, 211);
+  }
+}
+@keyframes pulsing {
+  from {
+    stroke: rgb(70, 130, 180);
+  }
+  to {
+    stroke: rgb(90, 157, 211);
   }
 }
 @media screen and (max-width: 639px) {
