@@ -48,7 +48,7 @@ function setGlobalSvgDettings() {
     globalSvgSettings = {
         rootGTranslate: [
             Math.round(Math.round(width) / 2),
-            Math.round(Math.round(height) / 2 - (headingHeight - 10)),
+            Math.round(Math.round(height) / 2 - (headingHeight - 20)),
         ],
         svgHeight: Math.round(height),
         svgWidth: Math.round(width),
@@ -71,7 +71,6 @@ function init() {
         xs: {
             width: Math.round(width * 0.5),
             height: Math.round(height * 0.5) - headingHeight,
-            scale: 1,
             descriptionBoxTranslate: "translate(0%, 0%)",
             translatedSvg: true,
             hrefTextAnchorStart: true,
@@ -80,20 +79,18 @@ function init() {
         sm: {
             width: Math.round(width * 0.5),
             height: Math.round(height * 0.5) - headingHeight,
-            scale: 1,
             descriptionBoxTranslate: "translate(-48%, 56%)",
         },
         //min-width 640px
         md: {
             width: Math.round(width * 0.8),
             height: Math.round(height * 0.8) - headingHeight,
-            scale: 1,
             descriptionBoxTranslate: "translate(-30%, -110%)",
         },
     };
 
     responsiveSettings = setResponsiveSettings(width);
-
+    console.log("Width: ", responsiveSettings.width);
     cluster = d3
         .cluster()
         .size([
@@ -127,9 +124,7 @@ function init() {
             globalSvgSettings.rootGTranslate[1] +
             "px) rotate(" +
             0 +
-            "deg) scale(" +
-            responsiveSettings.scale +
-            ")"
+            "deg)"
         );
     node = svg.append("g");
     link = svg.append("g");
